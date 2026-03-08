@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌸 Праздничный дождь – генератор 8 марта</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #ffe4ec 0%, #ffeef5 50%, #fff9fb 100%);
+            font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            margin: 0;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Карточка с формой и поздравлением */
+        .card {
+            max-width: 700px;
+            width: 100%;
+            background: rgba(255, 245, 250, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 60px 60px 50px 50px;
+            box-shadow: 0 30px 40px -10px rgba(190, 70, 110, 0.4), 0 10px 20px #ffd9e4;
+            padding: 32px 28px 45px;
+            border: 3px solid #ffffffd9;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-align: center;
+            color: #b63b62;
+            text-shadow: 4px 4px 0 #ffd0dd;
+            margin-bottom: 30px;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        h1 span {
+            font-size: 2.8rem;
+            filter: drop-shadow(0 6px 3px #ff94b4);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #a1355a;
+            margin-left: 10px;
+            font-size: 1.15rem;
+            letter-spacing: 0.2px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        input, select, button {
+            font-family: inherit;
+            font-size: 1.1rem;
+            border-radius: 60px;
+            border: none;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        input, select {
+            background: white;
+            padding: 18px 26px;
+            border: 2px solid #ffb7cf;
+            box-shadow: inset 0 3px 8px #ffe7f0, 0 5px 10px #ffc1d4;
+            color: #2c0f1b;
+            font-weight: 400;
+            width: 100%;
+        }
+
+        select {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="%23b63b62" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 22px center;
+            background-size: 24px;
+        }
+
+        input:focus, select:focus {
+            border-color: #e63e73;
+            box-shadow: 0 0 0 5px #fec9db, inset 0 2px 5px #ffe2ed;
+        }
+
+        button {
+            background: #de4f81;
+            color: white;
+            font-weight: 800;
+            padding: 18px 25px;
+            cursor: pointer;
+            border: 3px solid #ffc1d6;
+            box-shadow: 0 10px 0 #972b52, 0 10px 25px #f48fb0;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 1.3rem;
+            margin-top: 12px;
+            transition: 0.08s linear;
+        }
+
+        button:active {
+            transform: translateY(7px);
+            box-shadow: 0 3px 0 #972b52, 0 12px 25px #f48fb0;
+        }
+
+        .greeting-box {
+            background: #fff5faf2;
+            border-radius: 50px;
+            padding: 32px 22px;
+            margin: 25px 0 20px;
+            border: 4px dashed #ff99bc;
+            box-shadow: inset 0 0 25px #ffe2f0, 0 8px 0 #b14569;
+            text-align: center;
+            font-size: 1.7rem;
+            font-weight: 500;
+            line-height: 1.4;
+            color: #381b29;
+            word-break: break-word;
+            min-height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 28px;
+            color: #bc4c72;
+            font-weight: 500;
+            font-size: 1rem;
+            border-top: 2px solid #ffc2d7;
+            padding-top: 18px;
+        }
+
+        @media (max-width: 500px) {
+            .card { padding: 20px 16px; }
+            h1 { font-size: 1.9rem; }
+            .greeting-box { font-size: 1.4rem; }
+        }
+
+        /* Стили для падающих элементов */
+        .shower-item {
+            position: fixed; /* фиксируем относительно окна, чтобы падали по всему экрану */
+            top: -20px;      /* старт чуть выше видимой области */
+            font-size: 2rem;
+            line-height: 1;
+            user-select: none;
+            pointer-events: none; /* чтобы не мешали нажимать кнопки */
+            z-index: 9999;
+            animation-name: fall;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+            filter: drop-shadow(0 8px 6px #f7a5bc);
+            will-change: transform;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(110vh); /* падают до низа окна + запас */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>
+            <span>🌷</span> Генератор + дождь <span>🌹</span>
+        </h1>
+
+        <div class="form-group">
+            <label for="nameInput">🎀 Имя (для поздравления)</label>
+            <input type="text" id="nameInput" placeholder="например, Машенька, Лера, мамуля..." autocomplete="off">
+
+            <label for="recipientSelect">🌸 Кого поздравляем?</label>
+            <select id="recipientSelect">
+                <option value="mom" selected>🌺 Мама</option>
+                <option value="sister">🌼 Сестра</option>
+            </select>
+
+            <button id="generateBtn">💐 Поздравить + дождь 💐</button>
+        </div>
+
+        <!-- блок с текстом поздравления -->
+        <div id="greetingText" class="greeting-box">
+            💖 напиши имя и нажми кнопку...
+        </div>
+
+        <div class="footer-note">
+            ✨ множество вариантов поздравлений + дождь из цветов и сердечек сверху! ✨
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // --- элементы интерфейса ---
+            const nameInput = document.getElementById('nameInput');
+            const recipientSelect = document.getElementById('recipientSelect');
+            const generateBtn = document.getElementById('generateBtn');
+            const greetingDiv = document.getElementById('greetingText');
+
+            // --- БОЛЬШОЙ набор поздравлений (для мамы и сестры) ---
+            const momGreetings = [
+                "🌷 Дорогая {name}! С 8 Марта! Твоя забота согревает меня каждый день. Пусть весна подарит море цветов, радости и поводов для улыбок!",
+                "🌹 Любимая {name}! Поздравляю с праздником весны! Желаю тебе оставаться такой же нежной, красивой и лучезарной. Счастья, здоровья и исполнения желаний!",
+                "🌸 {name}, с 8 Марта! Ты — самая лучшая мама на свете. Пусть каждый день приносит только приятные сюрпризы, а глаза сияют от счастья!",
+                "🌺 {name}! В этот чудесный день хочу пожелать тебе весеннего настроения, лёгкости, вдохновения. Пусть всё задуманное сбывается легко и радостно!",
+                "🌼 С праздником, {name}! Спасибо за твоё тепло и мудрость. Желаю тебе ярких красок жизни, море цветов и безграничного счастья!",
+                "💐 {name}, с 8 Марта! Ты — мой главный цветок. Оставайся всегда такой же молодой, энергичной и прекрасной! Целую крепко!",
+                "🌷 Родная {name}! Пусть эта весна принесёт тебе нежность, любовь и гармонию. Огромного счастья, улыбок и весеннего тепла!",
+                "🌹 С днём 8 Марта, {name}! Желаю тебе, чтобы каждый день был наполнен заботой близких, ароматом цветов и приятными сюрпризами!",
+                "🌸 {name}! Поздравляю с праздником весны! Ты заслуживаешь только самого лучшего: пусть всё будет именно так, как ты мечтаешь!",
+                "🌺 Любимая {name}! В этот день хочется сказать спасибо за твоё сердце. Будь счастлива, здорова и бесконечно красива!"
+            ];
+
+            const sisterGreetings = [
+                "🌸 Сестрёнка {name}! С 8 Марта! Ты — моя поддержка и вдохновение. Пусть весна подарит тебе лёгкость, любовь и много классных событий!",
+                "🌼 {name}, с праздником! Оставайся такой же яркой, стильной и удивительной. Пусть сбудутся самые смелые мечты!",
+                "🌷 {name}! С днём весны! Желаю тебе океан позитива, верных друзей, путешествий и только сладких сюрпризов!",
+                "🌹 Любимая сестричка {name}! Ты — мой лучик света. Пусть жизнь играет яркими красками, а удача всегда идёт рядом!",
+                "🌺 {name}! Поздравляю с 8 Марта! Пусть каждый день будет модным, весёлым и незабываемым. Сияй и радуй нас!",
+                "💐 {name}, с праздником! Желаю тебе головокружительных романов, море цветов, и чтобы всё получалось с пол-оборота!",
+                "🌸 Сестричка {name}! Пусть весна исполнит твои желания. Оставайся всегда такой же красивой, умной и неотразимой!",
+                "🌼 {name}! С 8 Марта! Желаю тебе нежности, вдохновения, лёгких денег и ярких эмоций. Пусть каждый день приносит радость!",
+                "🌷 {name}! Поздравляю! Желаю тебе море улыбок, цветов, подарков и чтобы весна в душе никогда не кончалась!",
+                "🌺 С праздником, {name}! Будь самой счастливой, любимой и успешной. Пусть вокруг будут только хорошие люди!"
+            ];
+
+            // --- огромный массив всего, что будет сыпаться (цветы, сердечки, звёздочки и т.д.) ---
+            const showerSymbols = [
+                // цветы
+                '🌷', '🌹', '🌸', '🌼', '🌻', '🌺', '💐', '🌸', '🌷',
+                // сердечки
+                '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💖', '💗', '💓', '💞', '💕',
+                // звёздочки и блестки
+                '⭐', '🌟', '✨', '⚡', '💫', '⭐',
+                // бантики, подарки, бабочки
+                '🎀', '🎁', '🦋', '🐞', '🌸', '🌼',
+                // солнышко, радуга
+                '☀️', '🌈', '☁️', '🕊️',
+                // дополнительные милые символы
+                '🐝', '🐇', '🐣', '🐥', '🪷', '🌱', '🍃', '🌿'
+            ];
+
+            // --- вспомогательная функция: случайное целое в диапазоне [min,max] ---
+            function randomInt(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+
+            // --- функция для создания дождя сверху ---
+            function startShowerFromTop() {
+                const count = randomInt(35, 55); // количество падающих элементов
+
+                for (let i = 0; i < count; i++) {
+                    const item = document.createElement('div');
+                    item.className = 'shower-item';
+
+                    // случайный символ из массива
+                    const randomIndex = Math.floor(Math.random() * showerSymbols.length);
+                    item.textContent = showerSymbols[randomIndex];
+
+                    // случайная горизонтальная позиция (0..100%)
+                    const leftPos = randomInt(0, 100);
+                    item.style.left = leftPos + '%';
+
+                    // случайная длительность падения (1.5 ... 4.5 сек)
+                    const duration = (Math.random() * 3 + 1.5).toFixed(2);
+                    item.style.animationDuration = duration + 's';
+
+                    // случайная задержка перед стартом (0 ... 1.2 сек)
+                    const delay = (Math.random() * 1.2).toFixed(2);
+                    item.style.animationDelay = delay + 's';
+
+                    // случайный размер (от 1.2rem до 3.5rem)
+                    const size = randomInt(12, 35) / 10;
+                    item.style.fontSize = size + 'rem';
+
+                    // небольшой случайный поворот
+                    const rotation = randomInt(-20, 20);
+                    item.style.transform = `rotate(${rotation}deg)`;
+
+                    // добавляем элемент в body
+                    document.body.appendChild(item);
+
+                    // удаляем элемент после окончания анимации, чтобы не копить мусор
+                    item.addEventListener('animationend', function() {
+                        if (item.parentNode) {
+                            item.parentNode.removeChild(item);
+                        }
+                    });
+                }
+            }
+
+            // --- генерация текста (случайный выбор) ---
+            function generateRandomGreeting(name, recipient) {
+                // Обработка пустого имени
+                let finalName = name.trim();
+                if (finalName === '') {
+                    finalName = (recipient === 'mom') ? 'мамочка' : 'сестрёнка';
+                }
+
+                let selectedArray;
+                if (recipient === 'mom') {
+                    selectedArray = momGreetings;
+                } else {
+                    selectedArray = sisterGreetings;
+                }
+
+                // случайный индекс
+                const randomIdx = Math.floor(Math.random() * selectedArray.length);
+                let greetingTemplate = selectedArray[randomIdx];
+
+                // заменить {name} на finalName (в некоторых шаблонах уже есть name)
+                greetingTemplate = greetingTemplate.replace(/{name}/g, finalName);
+                
+                return greetingTemplate;
+            }
+
+            // --- основной обработчик клика ---
+            function handleGenerate() {
+                const name = nameInput.value;
+                const recipient = recipientSelect.value;
+
+                // Получаем случайное поздравление
+                const greeting = generateRandomGreeting(name, recipient);
+                greetingDiv.textContent = greeting;
+
+                // Запускаем дождь сверху
+                startShowerFromTop();
+            }
+
+            // Навешиваем обработчик на кнопку
+            generateBtn.addEventListener('click', handleGenerate);
+
+            // Enter в поле имени тоже вызывает генерацию
+            nameInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    generateBtn.click();
+                }
+            });
+
+            // Можно сразу показать небольшой дождь при загрузке, чтобы задать настроение
+            window.addEventListener('load', () => {
+                startShowerFromTop();
+            });
+        })();
+    </script>
+</body>
+</html>
